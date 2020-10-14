@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./laravel:/var/www/html/
+  web:
+    build: 
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+
+    ports:
+      - "8000:80"
+    depends_on:
+      - app
+
