@@ -19,4 +19,5 @@ RUN apt-get update && \
 
 COPY ./docker/php/php.ini /usr/local/etc/php/
 COPY ./laravel ${WORKDIR}/
+RUN chmod -R a+w storage/ bootstrap/cache
 
