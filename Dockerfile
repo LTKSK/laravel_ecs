@@ -18,4 +18,5 @@ RUN apt-get update && \
   composer global require hirak/prestissimo
 
 COPY ./docker/php/php.ini /usr/local/etc/php/
+COPY ./laravel ${WORKDIR}/
 
