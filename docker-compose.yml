@@ -23,5 +23,5 @@ services:
       dockerfile: docker/mysql/Dockerfile
     ports:
       - 3306:3306
-    volumes:
-      - ./docker/mysql/db_data:/var/lib/mysql
+        #volumes:
+        #  - ./docker/mysql/db_data:/var/lib/mysql
