@@ -17,7 +17,11 @@ RUN apt-get update && \
   composer config -g repos.packagist composer https://packagist.org && \
   composer global require hirak/prestissimo
 
+COPY ./laravel/composer.json ${WORKDIR}/
+COPY ./laravel/composer.lock ${WORKDIR}/
+
 COPY ./docker/php/php.ini /usr/local/etc/php/
 COPY ./laravel ${WORKDIR}/
+# php-fpmのuserが書き込むディレクトリに権限つけておく
 RUN chmod -R a+w storage/ bootstrap/cache
 

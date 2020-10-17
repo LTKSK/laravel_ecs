@@ -16,3 +16,12 @@ services:
       # 開発時だけ有効にしたい
     volumes:
       - ./laravel:/var/www/html
+
+  db:
+    build:
+      context: .
+      dockerfile: docker/mysql/Dockerfile
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/db_data:/var/lib/mysql
