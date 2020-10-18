@@ -3,6 +3,9 @@ FROM php:7.4-fpm-buster
 ENV WORKDIR=/var/www/html
 WORKDIR $WORKDIR
 
+ARG UID=1000
+ARG GID=1000
+
 COPY --from=composer:1.10 /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update && \
@@ -17,11 +20,16 @@ RUN apt-get update && \
   composer config -g repos.packagist composer https://packagist.org && \
   composer global require hirak/prestissimo
 
+COPY ./docker/php/php.ini /usr/local/etc/php/
 COPY ./laravel/composer.json ${WORKDIR}/
 COPY ./laravel/composer.lock ${WORKDIR}/
 
-COPY ./docker/php/php.ini /usr/local/etc/php/
 COPY ./laravel ${WORKDIR}/
+RUN composer install --no-progress
 # php-fpmのuserが書き込むディレクトリに権限つけておく
 RUN chmod -R a+w storage/ bootstrap/cache
+
+# 引数で渡したgroupidとuseridをwww-dataに適用
+RUN groupmod -o -g $GID www-data \
+  && usermod -o -u $UID -g www-data www-data
 

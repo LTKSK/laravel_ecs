@@ -6,3 +6,5 @@ ENV TZ=Asia/Tokyo \
   MYSQL_ROOT_PASSWORD=secret
 
 COPY ./docker/mysql/my.cnf /etc/my.cnf
+RUN chmod 644 /etc/my.cnf
+
