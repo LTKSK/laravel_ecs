@@ -38,9 +38,30 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['stdout'],
+            'channels' => ['stdout', 'stderr'],
             'ignore_exceptions' => false,
         ],
+
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'level' => 'info',
+            'with' => [
+                'stream' => 'php://stdout',
+            ],
+            'tap' => [CustomFormtterApply::class]
+        ],
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
+            'tap' => [CustomFormtterApply::class]
+        ],
+
 
         'single' => [
             'driver' => 'single',
@@ -71,26 +92,6 @@ return [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
             ],
-        ],
-
-        'stdout' => [
-            'driver' => 'monolog',
-            'handler' => StreamHandler::class,
-            'level' => 'info',
-            'with' => [
-                'stream' => 'php://stdout',
-            ],
-            'tap' => [CustomFormtterApply::class]
-        ],
-
-        'stderr' => [
-            'driver' => 'monolog',
-            'handler' => StreamHandler::class,
-            'formatter' => env('LOG_STDERR_FORMATTER'),
-            'with' => [
-                'stream' => 'php://stderr',
-            ],
-            'tap' => [CustomFormtterApply::class]
         ],
 
         'syslog' => [

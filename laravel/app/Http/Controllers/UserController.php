@@ -11,7 +11,6 @@ class UserController extends Controller
     return User::all();
   }
 
-
   public function create(Request $request) {
     $name = $request->input("name");
     User::create(["name" => $name]);
