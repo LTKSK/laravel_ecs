@@ -1,6 +1,6 @@
 FROM php:7.4-fpm-buster
 
-ENV WORKDIR=/var/www/html
+ENV WORKDIR=/var/www/html 
 WORKDIR $WORKDIR
 
 ARG UID=1000
@@ -21,6 +21,8 @@ RUN apt-get update && \
   composer global require hirak/prestissimo
 
 COPY ./docker/php/php.ini /usr/local/etc/php/
+# confを上書き。余計なlog出さないように、access.logを変更している
+COPY ./docker/php/docker.conf /usr/local/etc/php-fpm.d
 COPY ./laravel/composer.json ${WORKDIR}/
 COPY ./laravel/composer.lock ${WORKDIR}/
 

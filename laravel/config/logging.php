@@ -3,7 +3,7 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
-use App\Logging\CustomFormtterApply;
+use App\Logging\CustomFormatterApply;
 
 return [
 
@@ -49,7 +49,7 @@ return [
             'with' => [
                 'stream' => 'php://stdout',
             ],
-            'tap' => [CustomFormtterApply::class]
+            'tap' => [CustomFormatterApply::class]
         ],
 
         'stderr' => [
@@ -59,7 +59,8 @@ return [
             'with' => [
                 'stream' => 'php://stderr',
             ],
-            'tap' => [CustomFormtterApply::class]
+            'level' => 'error',
+            'tap' => [CustomFormatterApply::class]
         ],
 
 
