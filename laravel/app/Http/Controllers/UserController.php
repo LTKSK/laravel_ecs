@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class UserController extends Controller
@@ -13,10 +14,20 @@ class UserController extends Controller
   }
 
   public function create(Request $request) {
-    Log::info("HOGE,huga");
-    Log::error("HOGE,error");
     $name = $request->input("name");
-    User::create(["name" => $name]);
+    DB::beginTransaction();
+    try{
+      User::create(["name" => $name]);
+      DB::commit();
+    } catch(\Exception $err) {
+      DB::rollBack();
+      Log::error("User'${name}'の作成に失敗", [
+        'name' => $name
+      ]);
+      return response()->json([
+        "message" => "予期せぬエラーでUserの作成に失敗"
+      ], 500);
+    }
     return response()->json(200);
   }
 }
