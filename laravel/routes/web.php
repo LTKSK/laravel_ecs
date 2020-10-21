@@ -15,6 +15,8 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/users', [UserController::class, "index"]);
+Route::push('/users', [UserController::class, "create"]);
+
 Route::get('/', function () {
     return view('welcome');
 });
