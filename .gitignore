@@ -3,4 +3,5 @@
 vendor
 node_modules
 db_data
+.bash_history
 

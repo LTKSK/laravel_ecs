@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    init: true
     volumes:
-      - ./:/home/work
+      - ./:/home/node
 

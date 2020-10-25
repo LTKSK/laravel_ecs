@@ -3,7 +3,11 @@ FROM node:14.14.0
 
 RUN apt update
 
+WORKDIR /home/node
+RUN chown -R node:node /home/node
+
 # typescriptとaws-cdkをinstallしたコンテナを作る
 RUN npm i -g typescript aws-cdk
-WORKDIR /home/work
+
+USER node 
 
