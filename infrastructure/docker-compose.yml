@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  cdk:
+    container_name: "cdk"
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/home/work
+

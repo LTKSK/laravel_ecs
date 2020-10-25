@@ -1,6 +1,6 @@
 .git
 .env
-/vendor
-/node_modules
+vendor
+node_modules
 db_data
 
