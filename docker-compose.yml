@@ -13,7 +13,6 @@ services:
   app:
     build: 
       context: .
-      # 開発時だけ有効にしたい
     volumes:
       - ./laravel:/var/www/html
 

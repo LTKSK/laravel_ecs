@@ -5,8 +5,9 @@ services:
     container_name: "cdk"
     build:
       context: .
-      dockerfile: ./Dockerfile
     init: true
     volumes:
       - ./:/home/node
+      # awscliのcred用
+      - ${HOME}/.aws/:/home/node/.aws/:ro
 
