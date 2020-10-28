@@ -1,7 +1,10 @@
 .git
 .env
 vendor
-node_modules
+node_modules/
 db_data
 .bash_history
+cdk.out/
+cdk.context.json
+.cdk.staging/
 
