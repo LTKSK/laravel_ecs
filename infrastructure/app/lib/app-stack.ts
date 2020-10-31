@@ -26,7 +26,9 @@ export class AppStack extends cdk.Stack {
       cidrBlock: "10.0.2.0/24",
     })
 
-    const internetGateway = new ec2.CfnInternetGateway(this, "InternetGateway", {});
+    // igw作って、VPCとpublic subnetのroutetableに設定
+    const internetGateway = new ec2.CfnInternetGateway(this, "LaravelInternetGateway", {});
+    // ここがアタッチの処理
     new ec2.CfnVPCGatewayAttachment(this, "LaravelGateway", {
       vpcId: vpc.vpcId,
       internetGatewayId: internetGateway.ref
@@ -36,8 +38,6 @@ export class AppStack extends cdk.Stack {
       routerId: internetGateway.ref
     })
 
-    // TODO: EIP作成(subnetに割り当て)
-    // TODO: subnet作成
     // TODO: taskDefinitionとALBだけどそこはまだpatternsを使う?
 
     //const cluster = new ecs.Cluster(this, "MyCluster", { vpc, clusterName: "MyCluster" })
