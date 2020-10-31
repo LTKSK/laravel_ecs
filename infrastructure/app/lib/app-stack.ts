@@ -7,18 +7,53 @@ export class AppStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpc = new ec2.Vpc(this, "MyVpc", {
-      maxAzs: 2
-    });
-    const cluster = new ecs.Cluster(this, "MyCluster", { vpc })
-    const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "MyFargateService",{
-      cluster,
-      cpu: 256,
-      desiredCount: 2,
-      taskImageOptions: {image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample")},
-      memoryLimitMiB: 1028,
-      publicLoadBalancer: true
-    });
-    new cdk.CfnOutput(this, 'LoadBalancerDNS', {value: fargateService.loadBalancer.loadBalancerDnsName});
+    const vpc = new ec2.Vpc(this, "LaravelVpc", 
+      { 
+        cidr: "10.0.0.0/16",
+        // 空にしないと自動で作られる
+        subnetConfiguration: []
+      }
+    );
+    // TODO: subnet作成
+    const publicSubnet = new ec2.Subnet(this, "PublicSubnet", {
+      availabilityZone: "ap-northeast-1a",
+      vpcId: vpc.vpcId,
+      cidrBlock: "10.0.1.0/24",
+    })
+    new ec2.Subnet(this, "PrivateSubnet", {
+      availabilityZone: "ap-northeast-1a",
+      vpcId: vpc.vpcId,
+      cidrBlock: "10.0.2.0/24",
+    })
+
+    const internetGateway = new ec2.CfnInternetGateway(this, "InternetGateway", {});
+    new ec2.CfnVPCGatewayAttachment(this, "LaravelGateway", {
+      vpcId: vpc.vpcId,
+      internetGatewayId: internetGateway.ref
+    })
+    publicSubnet.addRoute("PubSubnetRoute", {
+      routerType: ec2.RouterType.GATEWAY,
+      routerId: internetGateway.ref
+    })
+
+    // TODO: EIP作成(subnetに割り当て)
+    // TODO: subnet作成
+    // TODO: taskDefinitionとALBだけどそこはまだpatternsを使う?
+
+    //const cluster = new ecs.Cluster(this, "MyCluster", { vpc, clusterName: "MyCluster" })
+    //const taskDefinition = new ecs.FargateTaskDefinition(this, "TaskDefinition");
+    //const container = taskDefinition.addContainer("MyContainer", {
+    //  image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample")
+    //});
+    //container.addPortMappings({ containerPort: 80 });
+    //const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "MyFargateService",{
+    //  cluster,
+    //  cpu: 256,
+    //  desiredCount: 1,
+    //  memoryLimitMiB: 1024,
+    //  publicLoadBalancer: true,
+    //  taskDefinition
+    //});
+    //new cdk.CfnOutput(this, 'LoadBalancerDNS', {value: fargateService.loadBalancer.loadBalancerDnsName});
   }
 }
