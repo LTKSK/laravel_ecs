@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { AppStack } from '../lib/app-stack';
+import { VpcStack } from '../lib/vpc';
+import { EcrStack } from '../lib/ecr';
+import { EcsStack } from '../lib/ecs';
 
 const app = new cdk.App();
-new AppStack(app, 'AppStack');
+const vpcStack = new VpcStack(app, 'VpcStack');
+//new EcrStack(app, "EcrStack");
+new EcsStack(app, "EcsStack", {vpc: vpcStack.vpc})
 

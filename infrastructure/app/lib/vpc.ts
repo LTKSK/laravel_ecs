@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as ec2 from "@aws-cdk/aws-ec2";
 
-export class AppStack extends cdk.Stack {
+export class VpcStack extends cdk.Stack {
   public readonly vpc: ec2.Vpc;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
