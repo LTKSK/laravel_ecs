@@ -10,19 +10,19 @@ export class VpcStack extends cdk.Stack {
     this.vpc = new ec2.Vpc(this, "LaravelVpc", {
       cidr: "10.0.0.0/16",
       maxAzs: 2,
-      // 空にしないと自動で作られる
-      subnetConfiguration: [
-        {
-          cidrMask: 24,
-          name: "Public",
-          subnetType: ec2.SubnetType.PUBLIC,
-        },
-        //{
-        //  cidrMask: 24,
-        //  name: "Private",
-        //  subnetType: ec2.SubnetType.PRIVATE
-        //},
-      ],
+      // 空にしないとNAT込で自動で作られる
+      //subnetConfiguration: [
+      //  {
+      //    cidrMask: 24,
+      //    name: "Public",
+      //    subnetType: ec2.SubnetType.PUBLIC,
+      //  },
+      //{
+      //  cidrMask: 24,
+      //  name: "Private",
+      //  subnetType: ec2.SubnetType.PRIVATE
+      //},
+      //],
     });
   }
 }
