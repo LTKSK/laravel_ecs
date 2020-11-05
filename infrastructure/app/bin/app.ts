@@ -7,5 +7,5 @@ import { EcsStack } from "../lib/ecs";
 
 const app = new cdk.App();
 const vpcStack = new VpcStack(app, "VpcStack");
-//new EcrStack(app, "EcrStack");
+new EcrStack(app, "EcrStack");
 new EcsStack(app, "EcsStack", { vpc: vpcStack.vpc });
