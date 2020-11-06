@@ -10,5 +10,5 @@ const vpcStack = new VpcStack(app, "VpcStack");
 const ecrStack = new EcrStack(app, "EcrStack");
 new EcsStack(app, "EcsStack", {
   vpc: vpcStack.vpc,
-  frontRepo: ecrStack.frontRepository,
+  repository: ecrStack.repository,
 });

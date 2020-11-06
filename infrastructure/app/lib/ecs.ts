@@ -8,7 +8,7 @@ import * as iam from "@aws-cdk/aws-iam";
 
 export interface Props {
   readonly vpc: ec2.IVpc;
-  readonly frontRepo: ecr.IRepository;
+  readonly repository: ecr.IRepository;
 }
 
 export class EcsStack extends cdk.Stack {
@@ -45,7 +45,7 @@ export class EcsStack extends cdk.Stack {
       { family: "laravelTasks", executionRole }
     );
     const container = taskDefinition.addContainer("MyContainer", {
-      image: ecs.ContainerImage.fromEcrRepository(props.frontRepo, "nginx"),
+      image: ecs.ContainerImage.fromEcrRepository(props.repository, "nginx"),
       logging: new ecs.AwsLogDriver({
         streamPrefix: "LaravelEcs", //logGroup
       }),
@@ -64,6 +64,9 @@ export class EcsStack extends cdk.Stack {
         publicLoadBalancer: true,
       }
     );
+    //fargateService.targetGroup.configureHealthCheck({
+    //  path: "/"
+    //})
 
     new cdk.CfnOutput(this, "LoadBalancerDNS", {
       value: fargateService.loadBalancer.loadBalancerDnsName,
