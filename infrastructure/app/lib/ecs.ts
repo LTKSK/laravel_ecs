@@ -44,13 +44,20 @@ export class EcsStack extends cdk.Stack {
       "LaravelTaskDefinition",
       { family: "laravelTasks", executionRole }
     );
-    const container = taskDefinition.addContainer("MyContainer", {
-      image: ecs.ContainerImage.fromEcrRepository(props.repository, "nginx"),
+    const webContainer = taskDefinition.addContainer("webContainer", {
+      image: ecs.ContainerImage.fromEcrRepository(props.repository, "web"),
       logging: new ecs.AwsLogDriver({
-        streamPrefix: "LaravelEcs", //logGroup
+        streamPrefix: "LaravelEcs/web", //logGroup
       }),
     });
-    container.addPortMappings({ containerPort: 80 });
+    webContainer.addPortMappings({ containerPort: 80 });
+
+    taskDefinition.addContainer("appContainer", {
+      image: ecs.ContainerImage.fromEcrRepository(props.repository, "app"),
+      logging: new ecs.AwsLogDriver({
+        streamPrefix: "LaravelEcs/front", //logGroup
+      }),
+    });
 
     const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(
       this,
@@ -64,6 +71,7 @@ export class EcsStack extends cdk.Stack {
         publicLoadBalancer: true,
       }
     );
+
     //fargateService.targetGroup.configureHealthCheck({
     //  path: "/"
     //})

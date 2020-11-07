@@ -9,6 +9,8 @@ services:
       - 8000:80
     depends_on:
       - app
+    environment:
+      PHP_HOST: app
 
   app:
     build: 
