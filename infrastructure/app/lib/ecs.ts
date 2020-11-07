@@ -45,19 +45,28 @@ export class EcsStack extends cdk.Stack {
       { family: "laravelTasks", executionRole }
     );
     const webContainer = taskDefinition.addContainer("webContainer", {
+      // 実際の運用で更新する時はtaskDefinitionのrepositoryのtagを更新する
       image: ecs.ContainerImage.fromEcrRepository(props.repository, "web"),
       logging: new ecs.AwsLogDriver({
         streamPrefix: "LaravelEcs/web", //logGroup
       }),
+    
     });
     webContainer.addPortMappings({ containerPort: 80 });
 
-    taskDefinition.addContainer("appContainer", {
+    const appContainer = taskDefinition.addContainer("appContainer", {
       image: ecs.ContainerImage.fromEcrRepository(props.repository, "app"),
       logging: new ecs.AwsLogDriver({
         streamPrefix: "LaravelEcs/front", //logGroup
       }),
     });
+    // nginxはappが動いてから起動
+    webContainer.addContainerDependencies(
+      {
+        container: appContainer, 
+        condition: ecs.ContainerDependencyCondition.START
+      }
+    )
 
     const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(
       this,
@@ -71,10 +80,6 @@ export class EcsStack extends cdk.Stack {
         publicLoadBalancer: true,
       }
     );
-
-    //fargateService.targetGroup.configureHealthCheck({
-    //  path: "/"
-    //})
 
     new cdk.CfnOutput(this, "LoadBalancerDNS", {
       value: fargateService.loadBalancer.loadBalancerDnsName,
