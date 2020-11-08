@@ -2,7 +2,7 @@ import * as cdk from "@aws-cdk/core";
 import * as ecs from "@aws-cdk/aws-ecs";
 import * as ec2 from "@aws-cdk/aws-ec2";
 import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
-//import * as logs from "@aws-cdk/aws-logs";
+import * as logs from "@aws-cdk/aws-logs";
 import * as ecr from "@aws-cdk/aws-ecr";
 import * as iam from "@aws-cdk/aws-iam";
 
@@ -14,20 +14,15 @@ export interface Props {
 export class EcsStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: Props & cdk.StackProps) {
     super(scope, id, props);
-
-    const vpc = props.vpc;
-    if (!vpc) {
-      throw new ReferenceError("vpc not found in props");
-    }
-
+    const {vpc} = props;
     const cluster = new ecs.Cluster(this, "LaravelCluster", {
       vpc,
       clusterName: "LaravelCluster",
     });
 
-    //const logGroup = new logs.LogGroup(this, "LaravelEcsLogGroup", {
-    //  logGroupName: "laravel-ecs-log-group",
-    //});
+    const logGroup = new logs.LogGroup(this, "LaravelEcsLogGroup", {
+      logGroupName: "laravel-ecs-log-group",
+    });
 
     const executionRole = new iam.Role(this, "LaravelEcsTaskExecutionRole", {
       roleName: "laravel-ecs-task-execution-role",
@@ -48,7 +43,7 @@ export class EcsStack extends cdk.Stack {
       // 実際の運用で更新する時はtaskDefinitionのrepositoryのtagを更新する
       image: ecs.ContainerImage.fromEcrRepository(props.repository, "web"),
       logging: new ecs.AwsLogDriver({
-        streamPrefix: "LaravelEcs/web", //logGroup
+        streamPrefix: "LaravelEcs/web", logGroup
       }),
     
     });
@@ -57,7 +52,7 @@ export class EcsStack extends cdk.Stack {
     const appContainer = taskDefinition.addContainer("appContainer", {
       image: ecs.ContainerImage.fromEcrRepository(props.repository, "app"),
       logging: new ecs.AwsLogDriver({
-        streamPrefix: "LaravelEcs/front", //logGroup
+        streamPrefix: "LaravelEcs/front", logGroup
       }),
     });
     // nginxはappが動いてから起動
